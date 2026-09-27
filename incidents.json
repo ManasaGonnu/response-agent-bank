@@ -1,0 +1,20 @@
+[
+  {
+    "incident_id": "INC-101",
+    "service": "api-gateway",
+    "symptom": "HTTP 504 Gateway Timeout during peak traffic spikes",
+    "log_snippet": "FATAL: remaining connection slots are reserved for non-replication superuser connections (error 53300)",
+    "root_cause": "PostgreSQL connection pool exhaustion caused by unclosed DB connections in order_processor",
+    "runbook_fix": "1. Run: kubectl scale deployment order-processor --replicas=2 to drop load\n2. Increase max_connections in PgBouncer pooler config from 100 to 400\n3. Restart PgBouncer daemon without dropping connections",
+    "warning": "Do NOT restart the primary PostgreSQL master instance directly, as it will abort active in-flight checkout transactions."
+  },
+  {
+    "incident_id": "INC-102",
+    "service": "auth-service",
+    "symptom": "Redis OOM command not allowed when used memory > maxmemory",
+    "log_snippet": "OOM command not allowed when used memory > 'maxmemory' on session_cache",
+    "root_cause": "JWT session tokens were written without TTL expiration, causing Redis memory to saturate",
+    "runbook_fix": "1. Run redis-cli config set maxmemory-policy allkeys-lru\n2. Flush volatile session cache keys: redis-cli --scan --pattern 'sess:*' | xargs redis-cli unlink\n3. Verify memory usage: redis-cli info memory",
+    "warning": "Do NOT run FLUSHALL because it will purge persistent user rate-limiting counters."
+  }
+]
