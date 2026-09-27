@@ -10,7 +10,7 @@ When teams attempt to plug standard LLMs into live incident triage, standard con
 * **Hallucinated Runbooks:** Generic models lack the topology context of an organization's internal architecture, recommending destructive default actions (like rebooting a master database node during an active write spike).
 * **Stateless Operations:** Vanilla LLM agents cannot distinguish between past incident patterns, operational warnings, and verified remediation procedures.
 
-To solve this, we engineered an **Autonomous Incident Response & Runbook Memory Agent**. By decoupling persistent institutional memory from high-speed LLM synthesis, this system enables real-time root-cause analysis and executable mitigation runbooks grounded in verified operational history.
+To solve this, we engineered an **Autonomous Incident Response & Runbook Memory Agent**. By decoupling persistent institutional memory from high-speed LLM synthesis, this system enables real-time root-cause analysis and executable mitigation runbooks grounded in verified operational history. To explore the foundational theory behind stateful agent architectures, see [what is agent memory](https://vectorize.io/what-is-agent-memory).
 
 ---
 
@@ -61,7 +61,7 @@ The agent combines low-latency inference with semantic memory retrieval:
 
 Standard Vector Database Retrieval-Augmented Generation (RAG) often struggles in SRE pipelines because raw vector proximity does not equate to operational causality. Simple vector search matches error strings while frequently discarding critical constraints attached to those errors.
 
-Hindsight acts as a persistent cognitive layer for agents. By establishing a dedicated memory bank, our agent retains structured post-mortem records:
+Hindsight acts as a persistent cognitive layer for agents (refer to the [Hindsight documentation](https://hindsight.vectorize.io/) for API reference). By establishing a dedicated memory bank, our agent retains structured post-mortem records:
 
 ```python
 # seed_memory.py - Incident Post-Mortem Retention
@@ -235,7 +235,8 @@ Displaying the raw memory objects alongside the generated mitigation plan allows
 
 1. **Persistent Memory Outperforms Context Stuffing:** Dumping complete engineering wikis or ticketing databases into LLM context introduces hallucinations, slows inference, and inflates costs. Semantic memory indexing delivers targeted context at lower latency.
 2. **Negative Constraints Are Critical in SRE:** In site reliability, knowing what **not** to execute is as critical as knowing the fix. Storing operational boundaries in memory prevents models from defaulting to disruptive recovery actions.
-3. **Decoupled Architecture Improves Durability:** Separating the persistent memory bank (Hindsight) from the inference engine (Groq) ensures that operational memory survives model upgrades and infrastructure transitions.
+3. **Decoupled Architecture Improves Durability:** Separating the persistent memory bank using the open-source [Hindsight repository](https://github.com/vectorize-io/hindsight) from the inference engine (Groq) ensures that operational memory survives model upgrades and infrastructure transitions.
+
 
 ---
 
